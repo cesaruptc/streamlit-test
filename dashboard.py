@@ -164,8 +164,18 @@ else:
 
 # Gráfico adicional: Ventas por día de la semana
 st.subheader("Ventas por Día de la Semana")
-df_filtrado["Dia Semana"] = df_filtrado["Fecha"].dt.day_name(locale='es')
-dias_orden = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
+day_map = {
+    0: 'Lunes',
+    1: 'Martes',
+    2: 'Miércoles',
+    3: 'Jueves',
+    4: 'Viernes',
+    5: 'Sábado',
+    6: 'Domingo'
+}
+
+df_filtrado["Dia Semana"] = df_filtrado["Fecha"].dt.dayofweek.map(day_map)
+dias_orden = list(day_map.values())
 ventas_dia = df_filtrado.groupby("Dia Semana")["Valor total (USD)"].sum().reindex(dias_orden).reset_index()
 fig7 = px.bar(ventas_dia, x="Dia Semana", y="Valor total (USD)", color="Dia Semana")
 st.plotly_chart(fig7, use_container_width=True)
